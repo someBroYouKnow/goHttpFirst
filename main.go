@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/somebroyouknow/goHttpFirst/internal/app"
+	"github.com/somebroyouknow/goHttpFirst/internal/routes"
 )
 
 func main() {
@@ -19,10 +20,11 @@ func main() {
 		panic(err)
 	}
 
-	http.HandleFunc("/health", HealthCheck)
+	r := routes.SetupRoutes(app)
 
 	server := &http.Server{
 		Addr:         fmt.Sprintf(":%d", port),
+		Handler:      r,
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
@@ -34,12 +36,4 @@ func main() {
 	if err != nil {
 		app.Logger.Fatal(err)
 	}
-}
-
-// r is a  pointer is because it will contain data for our client
-// we will see that with use of a middleware, we want to persist the data
-// w is something we get from handleFunc that we can modify as we want
-func HealthCheck(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Status is available")
-
 }
