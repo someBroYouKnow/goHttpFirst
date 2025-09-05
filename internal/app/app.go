@@ -32,10 +32,10 @@ func NewApplication() (*Application, error) {
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 
 	// space for stores
+	workoutStore := store.NewPostgresWorkoutStore(pgDb)
 
 	// here are my handlers
-
-	workoutHandler := api.NewWorkoutHandler()
+	workoutHandler := api.NewWorkoutHandler(workoutStore)
 
 	// as app is the memory in an application, what happens if you remmove the &  during its declaration
 	app := &Application{
