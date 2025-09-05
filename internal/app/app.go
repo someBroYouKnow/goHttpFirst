@@ -1,20 +1,28 @@
 package app
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 
 	"github.com/somebroyouknow/goHttpFirst/internal/api"
+	"github.com/somebroyouknow/goHttpFirst/internal/store"
 )
 
 type Application struct {
 	Logger         *log.Logger
 	WorkoutHandler *api.WorkoutHandler
+	DB             *sql.DB
 }
 
 func NewApplication() (*Application, error) {
+	pgDb, err := store.Open()
+	if err != nil {
+		return nil, err
+	}
+
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 
 	// space for stores
@@ -27,6 +35,7 @@ func NewApplication() (*Application, error) {
 	app := &Application{
 		Logger:         logger,
 		WorkoutHandler: workoutHandler,
+		DB:             pgDb,
 	}
 
 	return app, nil // nil are valid error types so we put it here

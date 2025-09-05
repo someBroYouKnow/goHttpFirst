@@ -20,6 +20,8 @@ func main() {
 		panic(err)
 	}
 
+	defer app.DB.Close() // tells application at the very end of execution to go ahead and call this function
+
 	r := routes.SetupRoutes(app)
 
 	server := &http.Server{
